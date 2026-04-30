@@ -190,7 +190,7 @@
           </div>
 
           <!-- Botão -->
-          <button id="btn-start" class="btn btn-start" onclick="init()">
+          <button id="btn-start" class="btn btn-start" onclick="toggleCamera()">
             <i class="bi bi-play-fill me-2"></i>Ativar Câmera
           </button>
         </div>
@@ -225,7 +225,12 @@
   <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
   <script>
     const URL = "https://teachablemachine.withgoogle.com/models/Uj6vjbIvE/";
-    let model, webcam, labelContainer, maxPredictions;
+    let model = null;
+    let webcam = null;
+    let labelContainer = null;
+    let maxPredictions = 0;
+    let animationFrameId = null;
+    let isRunning = false;
 
     function getBarClass(prob) {
       if (prob >= 0.65) return "high";
@@ -233,35 +238,53 @@
       return "low";
     }
 
-    async function init() {
+    function updateStatus(running) {
+      const badge = document.getElementById("status-badge");
+      if (running) {
+        badge.className = "status-badge status-running";
+        badge.innerHTML = '<span class="pulse-dot me-1"></span>Analisando';
+      } else {
+        badge.className = "status-badge status-idle";
+        badge.innerHTML = '<i class="bi bi-circle-fill me-1" style="font-size:0.5rem; vertical-align:middle;"></i>Aguardando';
+      }
+    }
+
+    function toggleCamera() {
       const btn = document.getElementById("btn-start");
+      if (isRunning) {
+        stopCamera(btn);
+      } else {
+        startCamera(btn);
+      }
+    }
+
+    async function startCamera(btn) {
       btn.disabled = true;
       btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Carregando...';
 
       try {
-        const modelURL    = URL + "model.json";
-        const metadataURL = URL + "metadata.json";
+        if (!model) {
+          const modelURL = URL + "model.json";
+          const metadataURL = URL + "metadata.json";
+          model = await tmImage.load(modelURL, metadataURL);
+          maxPredictions = model.getTotalClasses();
+        }
 
-        model = await tmImage.load(modelURL, metadataURL);
-        maxPredictions = model.getTotalClasses();
+        if (!webcam) {
+          webcam = new tmImage.Webcam(340, 340, true);
+          await webcam.setup();
+        }
 
-        const flip = true;
-        webcam = new tmImage.Webcam(340, 340, flip);
-        await webcam.setup();
         await webcam.play();
-
+        isRunning = true;
         document.getElementById("webcam-placeholder").style.display = "none";
         document.getElementById("webcam-container").appendChild(webcam.canvas);
-
-        const badge = document.getElementById("status-badge");
-        badge.className = "status-badge status-running";
-        badge.innerHTML = '<span class="pulse-dot me-1"></span>Analisando';
-
-        btn.innerHTML = '<i class="bi bi-stop-fill me-2"></i>Em execução';
+        updateStatus(true);
+        btn.disabled = false;
+        btn.innerHTML = '<i class="bi bi-stop-fill me-2"></i>Parar';
 
         labelContainer = document.getElementById("label-container");
         labelContainer.innerHTML = "";
-
         for (let i = 0; i < maxPredictions; i++) {
           const item = document.createElement("div");
           item.className = "label-item";
@@ -276,35 +299,56 @@
           labelContainer.appendChild(item);
         }
 
-        window.requestAnimationFrame(loop);
+        animationFrameId = window.requestAnimationFrame(loop);
       } catch (err) {
         btn.disabled = false;
         btn.innerHTML = '<i class="bi bi-play-fill me-2"></i>Ativar Câmera';
+        updateStatus(false);
         alert("Erro ao acessar a câmera ou carregar o modelo. Verifique as permissões.");
         console.error(err);
       }
     }
 
+    function stopCamera(btn) {
+      isRunning = false;
+      if (animationFrameId) {
+        window.cancelAnimationFrame(animationFrameId);
+        animationFrameId = null;
+      }
+
+      if (webcam) {
+        webcam.stop();
+        if (webcam.canvas && webcam.canvas.parentElement) {
+          webcam.canvas.parentElement.removeChild(webcam.canvas);
+        }
+      }
+
+      document.getElementById("webcam-placeholder").style.display = "flex";
+      updateStatus(false);
+      btn.innerHTML = '<i class="bi bi-play-fill me-2"></i>Ativar Câmera';
+    }
+
     async function loop() {
+      if (!isRunning) return;
       webcam.update();
       await predict();
-      window.requestAnimationFrame(loop);
+      animationFrameId = window.requestAnimationFrame(loop);
     }
 
     async function predict() {
       const prediction = await model.predict(webcam.canvas);
       for (let i = 0; i < maxPredictions; i++) {
-        const prob    = prediction[i].probability;
-        const pct     = Math.round(prob * 100);
-        const barEl   = document.getElementById("bar-" + i);
-        const valEl   = document.getElementById("val-" + i);
-        const nameEl  = document.getElementById("name-" + i);
+        const prob = prediction[i].probability;
+        const pct = Math.round(prob * 100);
+        const barEl = document.getElementById("bar-" + i);
+        const valEl = document.getElementById("val-" + i);
+        const nameEl = document.getElementById("name-" + i);
 
-        nameEl.textContent  = prediction[i].className;
-        valEl.textContent   = pct + "%";
-        barEl.style.width   = pct + "%";
+        nameEl.textContent = prediction[i].className;
+        valEl.textContent = pct + "%";
+        barEl.style.width = pct + "%";
         barEl.setAttribute("aria-valuenow", pct);
-        barEl.className     = "progress-bar " + getBarClass(prob);
+        barEl.className = "progress-bar " + getBarClass(prob);
       }
     }
   </script>
