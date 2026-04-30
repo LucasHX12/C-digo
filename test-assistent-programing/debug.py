@@ -16,14 +16,19 @@ total_item1 = qtd1 * item1
 total_item2 = qtd2 * item2
 total_item3 = qtd3 * item3
 
+# Calcula subtotal somando todos os itens antes de aplicar taxas
 subtotal = total_item1 + total_item2 + total_item3
+# Aplica imposto fixo de 10% sobre o subtotal para simplificar cálculo tributário
 imposto = subtotal * 0.10
 
 # DESCONTO
+# Permite desconto opcional baseado em cupom percentual digitado pelo usuário
 desconto_cupom = float(input("Você tem um cupom de desconto? (Digite o percentual ou 0): "))
+# Calcula desconto proporcional ao subtotal para manter consistência com valor base
 desconto = subtotal * (desconto_cupom / 100)
 
 # TOTAL FINAL
+# Aplica imposto sobre subtotal e subtrai desconto, seguindo ordem: subtotal + imposto - desconto
 total = subtotal + imposto - desconto
 
 # EXIBIÇÃO
@@ -40,6 +45,7 @@ print(separador)
 print(f" Subtotal:      R$ {subtotal:.2f}")
 print(f" Imposto (10%): R$ {imposto:.2f}")
 
+# Exibe desconto apenas se houver valor maior que zero para evitar confusão na fatura
 if desconto_cupom > 0:
     print(f" Desconto ({desconto_cupom:.0f}%): -R$ {desconto:.2f}")
 
