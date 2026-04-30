@@ -1,0 +1,4 @@
+# GitHub Pages configuration
+# Disable Jekyll processing for this site
+plugins_dir: []
+exclude: [.github, test-assistent-programing]
