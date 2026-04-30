@@ -47,7 +47,25 @@ def eh_primo(numero: int) -> bool:
 
 
 def executar_testes() -> None:
-    """Executa testes automatizados da função eh_primo."""
+    """Executa testes automatizados da função eh_primo.
+    
+    Valida o funcionamento da função `eh_primo()` através de um conjunto
+    abrangente de casos de teste, incluindo números primos, compostos e
+    números especiais (0, 1, números negativos).
+    
+    Imprime o resultado de cada teste indicando se passou ou falhou,
+    além de um resumo final informando o status geral dos testes.
+    
+    Returns:
+        None
+    
+    Exemplo:
+        >>> executar_testes()
+        Executando testes da função eh_primo:
+          2: PASSOU (esperado: True, obtido: True)
+          ...
+        Todos os testes passaram! ✅
+    """
     # Casos de teste: (numero, esperado)
     casos_teste: List[Tuple[int, bool]] = [
         (2, True),   # Primo par
@@ -86,7 +104,23 @@ def executar_testes() -> None:
 
 
 def interacao_usuario() -> None:
-    """Permite interação manual com o usuário para testar números."""
+    """Permite interação manual com o usuário para testar números primos.
+    
+    Implementa um loop interativo que solicita ao usuário a digitação de
+    números inteiros e verifica se cada um é primo ou não. O loop continua
+    até que o usuário digite 'sair'.
+    
+    O usuário receberá mensagens de erro caso digite valores inválidos
+    (não-inteiros) e poderá encerrar a aplicação digitando 'sair'.
+    
+    Returns:
+        None
+    
+    Exemplo:
+        >>> interacao_usuario()
+        Digite um número inteiro para verificar se é primo (ou 'sair' para encerrar): 7
+        7 é primo? True
+    """
     MENSAGEM_PROMPT = "Digite um número inteiro para verificar se é primo (ou 'sair' para encerrar): "
     MENSAGEM_ERRO = "Por favor, digite um número inteiro válido ou 'sair'."
 
