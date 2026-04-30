@@ -1,52 +1,52 @@
-## Mudanças feitas na refatoração
+## MudanÃ§as feitas na refatoraÃ§Ã£o
 
-### 1. Extração de lógica em função reutilizável
-- O cálculo das estatísticas foi movido para a função `calcular_estatisticas(numbers: List[float])`.
-- Isso torna o código reutilizável em outros módulos e facilita testes.
+### 1. ExtraÃ§Ã£o de lÃ³gica em funÃ§Ã£o reutilizÃ¡vel
+- O cÃ¡lculo das estatÃ­sticas foi movido para a funÃ§Ã£o `calcular_estatisticas(numbers: List[float])`.
+- Isso torna o cÃ³digo reutilizÃ¡vel em outros mÃ³dulos e facilita testes.
 
-### 2. Tipagem explícita
+### 2. Tipagem explÃ­cita
 - Foram adicionados tipos:
-  - `List[float]` para o parâmetro `numbers`
+  - `List[float]` para o parÃ¢metro `numbers`
   - `Tuple[float, float, float, float]` para o retorno
-- Isso melhora a legibilidade e ajuda ferramentas de análise estática a detectar erros.
+- Isso melhora a legibilidade e ajuda ferramentas de anÃ¡lise estÃ¡tica a detectar erros.
 
-### 3. Documentação clara com docstring
+### 3. DocumentaÃ§Ã£o clara com docstring
 - Incluiu-se uma docstring explicando:
-  - o que a função faz
-  - o parâmetro esperado
+  - o que a funÃ§Ã£o faz
+  - o parÃ¢metro esperado
   - o valor retornado
-  - a exceção lançada
-- Isso facilita o entendimento do código sem precisar ler a implementação.
+  - a exceÃ§Ã£o lanÃ§ada
+- Isso facilita o entendimento do cÃ³digo sem precisar ler a implementaÃ§Ã£o.
 
-### 4. Validação de entrada
-- Agora o código verifica se a lista está vazia:
-  - `if not numbers: raise ValueError("A lista não pode estar vazia.")`
-- Essa proteção evita divisão por zero e resultados inválidos.
+### 4. ValidaÃ§Ã£o de entrada
+- Agora o cÃ³digo verifica se a lista estÃ¡ vazia:
+  - `if not numbers: raise ValueError("A lista nÃ£o pode estar vazia.")`
+- Essa proteÃ§Ã£o evita divisÃ£o por zero e resultados invÃ¡lidos.
 
-### 5. Uso de funções built-in para cálculo
-- A refatoração usa:
+### 5. Uso de funÃ§Ãµes built-in para cÃ¡lculo
+- A refatoraÃ§Ã£o usa:
   - `sum(numbers)` para soma
   - `len(numbers)` para quantidade
   - `max(numbers)` para maior valor
   - `min(numbers)` para menor valor
-- Isso simplifica o código e evita loops manuais.
+- Isso simplifica o cÃ³digo e evita loops manuais.
 
-### 6. Separação de exemplo de uso
-- O exemplo de execução foi colocado dentro de:
+### 6. SeparaÃ§Ã£o de exemplo de uso
+- O exemplo de execuÃ§Ã£o foi colocado dentro de:
   - `if __name__ == "__main__":`
-- Assim, quando o arquivo for importado como módulo, não executa o bloco de demonstração automaticamente.
+- Assim, quando o arquivo for importado como mÃ³dulo, nÃ£o executa o bloco de demonstraÃ§Ã£o automaticamente.
 
-### 7. Formatação de saída
-- A saída do valor médio é exibida com duas casas decimais:
-  - `print(f"Média: {media:.2f}")`
-- Isso melhora a apresentação do resultado.
+### 7. FormataÃ§Ã£o de saÃ­da
+- A saÃ­da do valor mÃ©dio Ã© exibida com duas casas decimais:
+  - `print(f"MÃ©dia: {media:.2f}")`
+- Isso melhora a apresentaÃ§Ã£o do resultado.
 
 ---
 
-## Resultado do código refatorado
-- Código mais organizado
-- Função isolada e reutilizável
-- Melhor documentação
+## Resultado do cÃ³digo refatorado
+- CÃ³digo mais organizado
+- FunÃ§Ã£o isolada e reutilizÃ¡vel
+- Melhor documentaÃ§Ã£o
 - Comportamento seguro para lista vazia
-- Uso idiomático de Python
-- Separação clara entre lógica e demonstração de uso
+- Uso idiomÃ¡tico de Python
+- SeparaÃ§Ã£o clara entre lÃ³gica e demonstraÃ§Ã£o de uso
